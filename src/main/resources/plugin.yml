@@ -1,5 +1,8 @@
 name: ${project.name}
 version: ${project.version}
 main: de.bossascrew.itemeditor.ItemEditor
-api-version: 1.18
+api-version: 1.17
 author: CubBossa
+
+commands:
+  itemeditor:

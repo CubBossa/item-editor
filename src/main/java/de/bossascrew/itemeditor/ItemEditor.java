@@ -10,6 +10,6 @@ public class ItemEditor extends JavaPlugin {
 	@Override
 	public void onEnable() {
 
-		Bukkit.getPluginCommand("itemEditor").setExecutor(new ItemEditorCommand());
+		Bukkit.getPluginCommand("itemeditor").setExecutor(new ItemEditorCommand());
 	}
 }
