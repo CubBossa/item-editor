@@ -2,6 +2,7 @@ package de.bossascrew.itemeditor.commands;
 
 import de.bossascrew.itemeditor.commands.flags.CommandFlag;
 import de.bossascrew.itemeditor.exception.ItemRequiredException;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -11,8 +12,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 public abstract class ItemSubCommand extends SubCommand {
+
+	@Getter
+	protected Predicate<ItemStack> displayPredicate;
 
 	public ItemSubCommand(@Nullable SubCommand parent, String name, @Nullable String permission) {
 		this(parent, new String[]{name}, permission);
@@ -21,6 +26,7 @@ public abstract class ItemSubCommand extends SubCommand {
 	public ItemSubCommand(@Nullable SubCommand parent, String[] names, @Nullable String permission) {
 		super(parent, names, permission, true);
 		this.acceptedFlags.add(ItemEditorCommand.FLAG_COPY);
+		this.displayPredicate = itemStack -> true;
 	}
 
 	@Override
@@ -49,7 +55,7 @@ public abstract class ItemSubCommand extends SubCommand {
 	public abstract boolean onCommand(Player player, String[] args, Map<CommandFlag, String> flags, ItemStack stack);
 
 	@Override
-	public List<String> getCompletions(CommandSender sender, String[] args) {
-		return super.getCompletions(sender, args);
+	public List<String> getCompletions(CommandSender sender, String[] args, Map<CommandFlag, String> foundFlags) {
+		return super.getCompletions(sender, args, foundFlags);
 	}
 }

@@ -3,6 +3,7 @@ package de.bossascrew.itemeditor.commands;
 import de.bossascrew.itemeditor.commands.flags.CommandFlag;
 import de.bossascrew.itemeditor.exception.CommandSyntaxException;
 import lombok.Getter;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -51,7 +52,7 @@ public class BridgeCommand extends SubCommand {
 	}
 
 	@Override
-	public List<String> getCompletions(CommandSender sender, String[] args) {
+	public List<String> getCompletions(CommandSender sender, String[] args, Map<CommandFlag, String> foundFlags) {
 
 		if (args.length > 1) {
 			SubCommand called = subCommands.stream()
@@ -60,10 +61,10 @@ public class BridgeCommand extends SubCommand {
 			if (called == null) {
 				return null;
 			}
-			return called.getCompletions(sender, Arrays.copyOfRange(args, 1, args.length));
+			return called.getCompletions(sender, Arrays.copyOfRange(args, 1, args.length), foundFlags);
 		}
 
-		List<String> completions = super.getCompletions(sender, args);
+		List<String> completions = super.getCompletions(sender, args, foundFlags);
 		boolean isSenderPlayer = sender instanceof Player;
 		if (isPlayerRequired() && !isSenderPlayer) {
 			return null;
@@ -71,6 +72,9 @@ public class BridgeCommand extends SubCommand {
 		completions.addAll(subCommands.stream()
 				.filter(sub -> !sub.isPlayerRequired() || isSenderPlayer)
 				.filter(sub -> sub.getPermission() == null || sender.hasPermission(sub.getPermission()))
+				.filter(sub -> !(sub instanceof ItemSubCommand isub) ||
+						(isSenderPlayer && ((Player) sender).getInventory().getItemInMainHand().getType() != Material.AIR
+								&& isub.getDisplayPredicate().test(((Player) sender).getInventory().getItemInMainHand())))
 				.map(SubCommand::getNames)
 				.flatMap(Stream::of)
 				.filter(s -> s.toLowerCase().startsWith(args[0]))

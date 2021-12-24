@@ -18,6 +18,7 @@ import java.util.Map;
 public class ItemEditorCommand implements CommandExecutor, TabCompleter {
 
 	public static CommandFlag FLAG_COPY = new CommandFlag('c', "copy", "applies modification to a copy of the held itemstack");
+	public static CommandFlag FLAG_UNSAFE = new CommandFlag('u', "unsafe", "allows applying unsafe enchantments/attributes");
 
 	private final SubCommand startCommand;
 	private final CommandFlagParser parser;
@@ -27,11 +28,14 @@ public class ItemEditorCommand implements CommandExecutor, TabCompleter {
 		parser = new CommandFlagParser();
 
 		new ItemFlagsSubCommand(startCommand, "itemflags", null);
-
 		new DisplayNameCommand(startCommand, "displayname", null);
+		new CustomModelDataSubCommand(startCommand, "custommodeldata", null);
+		new DamageSubCommand(startCommand, "damage", null);
+		new ColorSubCommand(startCommand, "dyecolor", null);
+		new RgbColorSubCommand(startCommand, "color", null);
+		new EnchantSubCommand(startCommand, "enchant", null);
 
 		SubCommand lore = new BridgeCommand(startCommand, "lore", null, true);
-
 
 	}
 
@@ -45,8 +49,7 @@ public class ItemEditorCommand implements CommandExecutor, TabCompleter {
 		} catch (CommandSyntaxException e) {
 			e.getCommand().sendHelp(commandSender);
 		} catch (ItemEditorException e) {
-			System.out.println(e.getClass().getName());
-			e.getMessage(); //TODO an sender senden;
+			e.sendMessage(commandSender);
 		}
 		return success;
 	}
@@ -57,7 +60,7 @@ public class ItemEditorCommand implements CommandExecutor, TabCompleter {
 		try {
 			Map<CommandFlag, String> foundFlags = new HashMap<>();
 			args = parser.reduce(args, startCommand.getAcceptedFlags(), foundFlags, true);
-			return startCommand.getCompletions(commandSender, args);
+			return startCommand.getCompletions(commandSender, args, foundFlags);
 		} catch (ItemEditorException e) {
 			System.out.println(e.getClass().getName());
 			//TODO messsage senden

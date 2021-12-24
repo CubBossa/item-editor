@@ -1,0 +1,11 @@
+prefix: "<green>ItemEditor <gray>» "
+no_permission: "<prefix><red>You don't have permission to do this."
+
+command:
+  requires_player: "<prefix><red>You have to be a player to perform this command."
+  parse_error: "<prefix><red>Error while parsing argument: <argument>"
+  requires_item: "<prefix><red>You have to hold an item in your main hand to perform this command."
+  unexpected_flag: "<prefix><red>Unknown command flag: <flag>"
+  syntax_help_header: "<yellow>Please use the following syntax:"
+  syntax_help_line: "<gray>» <white><click:suggest_command:/<cmd>><cmd></click></white> <aqua><hover:show_text:\"<flags>\">--flags</hover></aqua>"
+  syntax_flags_line: "<yellow><name> (<letter>): <white><description>"

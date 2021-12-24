@@ -1,10 +1,14 @@
 package de.bossascrew.itemeditor.commands;
 
+import de.bossascrew.itemeditor.ItemEditor;
+import de.bossascrew.itemeditor.Message;
 import de.bossascrew.itemeditor.commands.flags.CommandFlag;
 import de.bossascrew.itemeditor.exception.PermissionException;
 import de.bossascrew.itemeditor.exception.PlayerRequiredException;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.Template;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -59,6 +63,8 @@ public abstract class SubCommand {
 		} else {
 			toPrint.add(this);
 		}
+
+		List<Component> components = new ArrayList<>();
 		for (SubCommand subCommand : toPrint) {
 			StringBuilder commandbase = new StringBuilder(subCommand.names[0] + " " + subCommand.getSyntax());
 			SubCommand parent = subCommand.getParent();
@@ -66,11 +72,23 @@ public abstract class SubCommand {
 				commandbase.insert(0, parent.getNames()[0] + " ");
 				parent = parent.getParent();
 			}
-			sender.sendMessage(" - /" + commandbase);
+			Component flagList = Component.text("Flags:");
+			for (CommandFlag flag : subCommand.getAcceptedFlags()) {
+				flagList = flagList.append(Component.newline()).append(Message.SYNTAX_FLAG_LINE.getTranslation(
+						Template.of("name", flag.getName()),
+						Template.of("letter", flag.getLetter() + ""),
+						Template.of("description", flag.getDescription())));
+			}
+
+			components.add(Message.SYNTAX_LINE.getTranslation(Template.of("cmd", commandbase.toString()), Template.of("flags", flagList)));
+		}
+		if (components.size() > 0) {
+			ItemEditor.getInstance().sendMessage(sender, Message.SYNTAX_HEADER);
+			components.forEach(component -> ItemEditor.getInstance().sendMessage(sender, component));
 		}
 	}
 
-	public List<String> getCompletions(CommandSender sender, String[] args) {
+	public List<String> getCompletions(CommandSender sender, String[] args, Map<CommandFlag, String> foundFlags) {
 		if (args[0].startsWith("--")) {
 			return getAcceptedFlags().stream().map(flag -> "--" + flag.getName()).collect(Collectors.toList());
 		} else if (args[0].startsWith("-")) {

@@ -1,7 +1,8 @@
 package de.bossascrew.itemeditor.commands;
 
-import de.bossascrew.itemeditor.Parser;
 import de.bossascrew.itemeditor.commands.flags.CommandFlag;
+import de.bossascrew.itemeditor.exception.CommandSyntaxException;
+import de.bossascrew.itemeditor.parser.Parser;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -25,19 +26,24 @@ public class ItemFlagsSubCommand extends ItemSubCommand {
 
 	@Override
 	public boolean onCommand(Player player, String[] args, Map<CommandFlag, String> flags, ItemStack itemStack) {
-		ItemFlag[] itemFlags = Parser.parseFlags(args[0]);
+		if (args.length == 0) {
+			throw new CommandSyntaxException(this);
+		}
+		List<ItemFlag> itemFlags = Parser.ITEMFLAG_PARSER.parseConcat(args[0]);
 
 		ItemMeta meta = itemStack.getItemMeta();
-		meta.addItemFlags(itemFlags);
+		meta.addItemFlags(itemFlags.toArray(ItemFlag[]::new));
 		itemStack.setItemMeta(meta);
 
 		return true;
 	}
 
 	@Override
-	public List<String> getCompletions(CommandSender sender, String[] args) {
-		List<String> completions = super.getCompletions(sender, args);
-		completions.addAll(Parser.printItemFlags(args[0]));
+	public List<String> getCompletions(CommandSender sender, String[] args, Map<CommandFlag, String> foundFlags) {
+		List<String> completions = super.getCompletions(sender, args, foundFlags);
+		if (args.length == 1) {
+			completions.addAll(Parser.ITEMFLAG_PARSER.getCompletionsConcat(args[0], List.of(ItemFlag.values())));
+		}
 		return completions;
 	}
 }
