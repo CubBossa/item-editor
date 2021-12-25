@@ -25,17 +25,15 @@ public class ColorSubCommand extends ItemSubCommand {
 	}
 
 	@Override
-	public boolean onCommand(Player player, String[] args, Map<CommandFlag, String> flags, ItemStack stack) {
+	public @Nullable ItemStack onCommand(Player player, String[] args, Map<CommandFlag, String> flags, ItemStack stack) {
 		if (args.length == 0) {
 			throw new CommandSyntaxException(this);
 		}
 		DyeColor d = Parser.DYE_PARSER.parse(args[0]);
 
-		if (stack instanceof Colorable colorable) {
-			colorable.setColor(d);
-			return true;
-		}
-		return false;
+		Colorable colorable = (Colorable) stack;
+		colorable.setColor(d);
+		return stack;
 	}
 
 	@Override

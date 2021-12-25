@@ -9,6 +9,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -18,13 +19,10 @@ public class TextUtils {
 	private static final GsonComponentSerializer GSON_SERIALZIER = GsonComponentSerializer.builder().build();
 
 	private static final LegacyComponentSerializer LEGACY_SERIALIZER = LegacyComponentSerializer.builder()
-			.character('§')
+			.character('&')
 			.hexColors()
-			.hexCharacter('x')
-			.useUnusualXRepeatedCharacterHexFormat()
+			.hexCharacter('#')
 			.build();
-
-	private static final PlainTextComponentSerializer PLAIN_SERIALIZER = PlainTextComponentSerializer.builder().build();
 
 	public Component fromLegacy(String legacy) {
 		return LEGACY_SERIALIZER.deserialize(legacy);
@@ -32,10 +30,6 @@ public class TextUtils {
 
 	public String toLegacy(Component component) {
 		return LEGACY_SERIALIZER.serialize(component);
-	}
-
-	public String toPlain(Component component) {
-		return PLAIN_SERIALIZER.serialize(component);
 	}
 
 	public String toGson(Component component) {

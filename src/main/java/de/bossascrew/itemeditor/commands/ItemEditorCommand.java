@@ -2,8 +2,10 @@ package de.bossascrew.itemeditor.commands;
 
 import de.bossascrew.itemeditor.commands.flags.CommandFlag;
 import de.bossascrew.itemeditor.commands.flags.CommandFlagParser;
+import de.bossascrew.itemeditor.commands.flags.TargetCommandFlag;
 import de.bossascrew.itemeditor.exception.CommandSyntaxException;
 import de.bossascrew.itemeditor.exception.ItemEditorException;
+import de.bossascrew.itemeditor.parser.Parser;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,6 +21,9 @@ public class ItemEditorCommand implements CommandExecutor, TabCompleter {
 
 	public static CommandFlag FLAG_COPY = new CommandFlag('c', "copy", "applies modification to a copy of the held itemstack");
 	public static CommandFlag FLAG_UNSAFE = new CommandFlag('u', "unsafe", "allows applying unsafe enchantments/attributes");
+	public static CommandFlag FLAG_GSON = new CommandFlag('g', "gson", "parses the input as gson format");
+	public static CommandFlag FLAG_LEGACY = new CommandFlag('l', "legacy", "parses the input as legacy format (&...)");
+	public static TargetCommandFlag<Integer> FLAG_INSERT = new TargetCommandFlag<>('i', "insert", "inserts at provided index", Parser.INT_PARSER, false);
 
 	private final SubCommand startCommand;
 	private final CommandFlagParser parser;
@@ -34,9 +39,11 @@ public class ItemEditorCommand implements CommandExecutor, TabCompleter {
 		new ColorSubCommand(startCommand, "dyecolor", null);
 		new RgbColorSubCommand(startCommand, "color", null);
 		new EnchantSubCommand(startCommand, "enchant", null);
+		new NbtSubCommand(startCommand, "nbttag", null);
 
 		SubCommand lore = new BridgeCommand(startCommand, "lore", null, true);
-
+		new LoreClearSubCommand(lore, "clear", null);
+		new LoreAddSubCommand(lore, "add", null);
 	}
 
 	@Override

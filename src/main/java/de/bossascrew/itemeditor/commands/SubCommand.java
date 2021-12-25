@@ -34,6 +34,10 @@ public abstract class SubCommand {
 	}
 
 	public SubCommand(@Nullable SubCommand parent, String[] names, @Nullable String permission, boolean playerRequired) {
+		if(parent != null && parent.equals(this)) {
+			throw new IllegalArgumentException("Subcommand cannot set self as parent");
+		}
+
 		this.parent = parent;
 		this.names = names;
 		this.permission = permission;
@@ -64,14 +68,14 @@ public abstract class SubCommand {
 			toPrint.add(this);
 		}
 
+		String commandBase = getNames()[0] + " ";
+		SubCommand extractName = this;
+		while (extractName.getParent() != null) {
+			extractName = extractName.getParent();
+			commandBase = extractName.getNames()[0] + " " + commandBase;
+		}
 		List<Component> components = new ArrayList<>();
 		for (SubCommand subCommand : toPrint) {
-			StringBuilder commandbase = new StringBuilder(subCommand.names[0] + " " + subCommand.getSyntax());
-			SubCommand parent = subCommand.getParent();
-			while (parent != null) {
-				commandbase.insert(0, parent.getNames()[0] + " ");
-				parent = parent.getParent();
-			}
 			Component flagList = Component.text("Flags:");
 			for (CommandFlag flag : subCommand.getAcceptedFlags()) {
 				flagList = flagList.append(Component.newline()).append(Message.SYNTAX_FLAG_LINE.getTranslation(
@@ -79,8 +83,10 @@ public abstract class SubCommand {
 						Template.of("letter", flag.getLetter() + ""),
 						Template.of("description", flag.getDescription())));
 			}
-
-			components.add(Message.SYNTAX_LINE.getTranslation(Template.of("cmd", commandbase.toString()), Template.of("flags", flagList)));
+			components.add(Message.SYNTAX_LINE.getTranslation(
+					Template.of("cmd_syntax", commandBase + subCommand.getNames()[0] + " " + subCommand.getSyntax()),
+					Template.of("cmd", "/" + commandBase + subCommand.getNames()[0]),
+					Template.of("flags", "/" + ItemEditor.getInstance().getMiniMessage().serialize(flagList))));
 		}
 		if (components.size() > 0) {
 			ItemEditor.getInstance().sendMessage(sender, Message.SYNTAX_HEADER);

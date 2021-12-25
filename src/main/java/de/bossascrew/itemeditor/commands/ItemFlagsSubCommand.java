@@ -25,7 +25,7 @@ public class ItemFlagsSubCommand extends ItemSubCommand {
 	}
 
 	@Override
-	public boolean onCommand(Player player, String[] args, Map<CommandFlag, String> flags, ItemStack itemStack) {
+	public @Nullable ItemStack onCommand(Player player, String[] args, Map<CommandFlag, String> flags, ItemStack itemStack) {
 		if (args.length == 0) {
 			throw new CommandSyntaxException(this);
 		}
@@ -35,7 +35,7 @@ public class ItemFlagsSubCommand extends ItemSubCommand {
 		meta.addItemFlags(itemFlags.toArray(ItemFlag[]::new));
 		itemStack.setItemMeta(meta);
 
-		return true;
+		return itemStack;
 	}
 
 	@Override

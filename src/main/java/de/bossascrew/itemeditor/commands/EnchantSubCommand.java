@@ -26,7 +26,7 @@ public class EnchantSubCommand extends ItemSubCommand {
 	}
 
 	@Override
-	public boolean onCommand(Player player, String[] args, Map<CommandFlag, String> flags, ItemStack stack) {
+	public @Nullable ItemStack onCommand(Player player, String[] args, Map<CommandFlag, String> flags, ItemStack stack) {
 		if (args.length == 0) {
 			throw new CommandSyntaxException(this);
 		}
@@ -42,7 +42,7 @@ public class EnchantSubCommand extends ItemSubCommand {
 		ItemMeta itemMeta = stack.getItemMeta();
 		itemMeta.addEnchant(enchantment, level, true);
 		stack.setItemMeta(itemMeta);
-		return true;
+		return stack;
 	}
 
 	@Override

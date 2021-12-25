@@ -21,18 +21,16 @@ public class DamageSubCommand extends ItemSubCommand {
 	}
 
 	@Override
-	public boolean onCommand(Player player, String[] args, Map<CommandFlag, String> flags, ItemStack stack) {
+	public @Nullable ItemStack onCommand(Player player, String[] args, Map<CommandFlag, String> flags, ItemStack stack) {
 		if (args.length == 0) {
 			throw new CommandSyntaxException(this);
 		}
 		int damage = Parser.INT_PARSER.parse(args[0]);
 
-		if (stack.getItemMeta() instanceof Damageable damageable) {
-			damageable.setDamage(damage);
-			stack.setItemMeta(damageable);
-			return true;
-		}
-		return false;
+		Damageable damageable = (Damageable) stack.getItemMeta();
+		damageable.setDamage(damage);
+		stack.setItemMeta(damageable);
+		return stack;
 	}
 
 	@Override

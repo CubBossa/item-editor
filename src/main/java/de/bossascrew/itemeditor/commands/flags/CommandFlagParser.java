@@ -47,15 +47,14 @@ public class CommandFlagParser {
 					throw new UnexpectedFlagException(args[argIndex]);
 				}
 				String target = null;
-				if (flag instanceof TargetCommandFlag tFlag) {
+				if (flag instanceof TargetCommandFlag) {
 					if (argIndex < args.length - 1) {
 						target = args[argIndex + 1];
 					}
-					tFlag.setTarget(target);
 				}
 				commandFlags.put(flag, target);
 			}
-			if (flagsInArg.stream().anyMatch(flag -> flag instanceof TargetCommandFlag tcf && tcf.getTarget() != null)) {
+			if (flagsInArg.stream().anyMatch(flag -> flag instanceof TargetCommandFlag)) {
 				argIndex++;
 			}
 			argIndex++;

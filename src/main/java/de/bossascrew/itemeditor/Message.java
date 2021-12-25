@@ -23,6 +23,7 @@ public class Message {
 	public static final Message SYNTAX_LINE = new Message("command.syntax_help_line");
 	public static final Message SYNTAX_FLAG_LINE = new Message("command.syntax_flags_line");
 	public static final Message UNSAFE_REQUIRED = new Message("command.unsafe_flag_required");
+	public static final Message TAG_NOT_FOUND = new Message("command.nbt.tag_not_found");
 
 	@Getter
 	private final String key;

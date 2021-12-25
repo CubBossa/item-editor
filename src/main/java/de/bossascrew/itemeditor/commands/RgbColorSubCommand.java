@@ -26,7 +26,7 @@ public class RgbColorSubCommand extends ItemSubCommand {
 	}
 
 	@Override
-	public boolean onCommand(Player player, String[] args, Map<CommandFlag, String> flags, ItemStack stack) {
+	public @Nullable ItemStack onCommand(Player player, String[] args, Map<CommandFlag, String> flags, ItemStack stack) {
 		if (args.length == 0) {
 			throw new CommandSyntaxException(this);
 		}
@@ -41,6 +41,6 @@ public class RgbColorSubCommand extends ItemSubCommand {
 			((PotionMeta) meta).setColor(color);
 		}
 		stack.setItemMeta(meta);
-		return true;
+		return stack;
 	}
 }

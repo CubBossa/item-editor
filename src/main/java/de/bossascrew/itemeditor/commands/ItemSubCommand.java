@@ -42,17 +42,17 @@ public abstract class ItemSubCommand extends SubCommand {
 		if (!mainHand.hasItemMeta()) {
 			mainHand.setItemMeta(Bukkit.getItemFactory().getItemMeta(mainHand.getType()));
 		}
-		boolean success = onCommand(player, args, flags, mainHand);
+		ItemStack stack = onCommand(player, args, flags, mainHand);
 
 		if (flags.containsKey(ItemEditorCommand.FLAG_COPY)) {
-			player.getInventory().addItem(mainHand);
+			player.getInventory().addItem(stack);
 		} else {
-			player.getInventory().setItemInMainHand(mainHand);
+			player.getInventory().setItemInMainHand(stack);
 		}
-		return success;
+		return true;
 	}
 
-	public abstract boolean onCommand(Player player, String[] args, Map<CommandFlag, String> flags, ItemStack stack);
+	public abstract @Nullable ItemStack onCommand(Player player, String[] args, Map<CommandFlag, String> flags, ItemStack stack);
 
 	@Override
 	public List<String> getCompletions(CommandSender sender, String[] args, Map<CommandFlag, String> foundFlags) {
